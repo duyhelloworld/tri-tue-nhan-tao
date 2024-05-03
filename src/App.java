@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class App {
-    private Queue<Node> MO = new ArrayDeque<>();
+    private List<Node> MO = new LinkedList<>();
     private List<Node> DONG = new LinkedList<>();
     private List<Graph> GRAPH = new LinkedList<>();
 
@@ -11,26 +11,68 @@ public class App {
         while (!MO.isEmpty()) {
             System.out.println("Bước " + ++n); 
             Node s = getmo();
-            System.out.println("S = " + s);
-            
+            DONG.add(s);
+            // System.out.println("S = " + s);
+            if (s.isGoal) {
+                System.out.println("Tìm kiếm thành công : " + s);
+                System.out.println("MO = " + MO);
+                System.out.println("DONG = " + DONG);
+                return;
+            }
+
             List<Node> children = getChild(s);
-            for (Node child : children) {
-                System.out.println("Distance " + s.name + " -> " + child.name + " : " + getDistance(s, child));
+            if (!children.isEmpty()) {
+                for (Node child : children) {
+                    // System.out.println("Distance " + s.name + " -> " + child.name + " : " + getDistance(s, child));
+                    int dis = getDistance(child, s);
+                    int f = dis + child.h;
+                    if (!MO.contains(child) && !DONG.contains(child)) {
+                        updateF(child, f);
+                    } 
+                }
             }
         }
     }
 
-    // Hàm getmo trong ví dụ của cô. ở đây lấy phần tử FIFO
+    // Hàm getmo. ở đây lấy phần tử có số f nhỏ nhất
     private Node getmo() {
         if (MO.isEmpty()) {
             return null;
         }
-        return MO.poll();
+        Node res = MO.get(0);
+        for (Node node : MO) {
+            if (node.f < res.f) {
+                res = node;
+            }
+        }
+        return res;
+    }
+
+    private void updateF(Node node, int f) {
+        for (Node mo : MO) {
+            if (mo.equals(node)) {
+                mo.f = f;
+            }
+        }
     }
 
     // Hàm tính khoảng cách giữa 2 node bất kì
     private int getDistance(Node from, Node to) {
         int g = 0;
+        if (from.equals(to)) {
+            return 0;
+        }
+        for (Graph graph : GRAPH) {
+            if (from.equals(graph.node1)) {
+                if (to.equals(graph.node2)) {
+                    return graph.distance;
+                }
+            } else if (from.equals(graph.node2)) {
+                if (to.equals(graph.node1)) {
+                    return graph.distance;
+                }
+            }
+        }
         return g;
     }
 
