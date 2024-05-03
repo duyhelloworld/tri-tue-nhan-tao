@@ -1,4 +1,5 @@
 public class Node {
+    
     String name;
     int h;
     boolean isGoal;
@@ -16,10 +17,9 @@ public class Node {
 
     @Override
     public String toString() {
-        return "{" +
-            " name='" + name + "'" +
-            ", h='" + h + "'" +
-            ", isGoal='" + isGoal + "'" +
-            "}";
+        return "Node " + name +
+            " (h=" + h +
+            ",isGoal=" + isGoal + "" +
+            ")\n";
     }
 }
