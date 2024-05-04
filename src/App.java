@@ -24,30 +24,36 @@ public class App {
                 return;
             }
 
+            // g(S)
+            int disRootS = getDistance(root, s);
+            System.out.println("Distance Root(" + root.name + ") -> S(" + s.name + ") : " + disRootS + "\n");
+
             List<Node> children = getChild(s);
             if (!children.isEmpty()) {
                 for (Node child : children) {
                     System.out.println("Child of " + s.name + " : " + child);
-                    int disChildS = getDistance(child, s);
-                    int disRootChild = getDistance(root, child);
-                    int f = disChildS + child.h + disRootChild;
-                    child.f = f;
-                    System.out.println("Distance S(" + s.name + ") -> Child(" + child.name + ") : " + disChildS);
-                    System.out.println("Distance Root(" + root.name + ") -> Child(" + child.name + ") : " + disRootChild);
-                    System.out.println("f(" + child.name + ") = " + f);
+                    
+                    int disSChild = getDistance(s, child);
+                    System.out.println("Distance S(" + s.name + ") -> Child(" + child.name + ") : " + disSChild);
+                    
+                    // g(m) = g(root, S) + g(S, m)
+                    int gChild = disRootS + disSChild;
+                    
                     if (!MO.contains(child) && !DONG.contains(child)) {
+                        child.g = gChild;
                         System.out.println("Add new node to MO : " + child);
                         MO.add(child);
                     } else {
                         for (int i = 0; i < MO.size(); i++) {
                             Node node = MO.get(i); 
-                            if (node.equals(child) && node.f > child.f) {
-                                System.out.println("Replace node of " + node + " by " + child);
-                                MO.remove(i);
-                                MO.add(i, child);
+                            if (node.equals(child) && node.g > gChild) {
+                                System.out.println("Update g of node " + node + " new value : " + gChild);
+                                node.g = gChild;
                             }
                         }
                     }
+                    // f(m) = g(m) + h(m)
+                    System.out.println("f(" + child.name + ") = " + (child.g + child.h));
                     sortMo();
                     System.out.println();
                 }
@@ -60,7 +66,7 @@ public class App {
             System.out.println("MO trống");
             return;
         }
-        MO.sort((n1, n2) -> n1.f.compareTo(n2.f));
+        MO.sort((n1, n2) -> n1.getF().compareTo(n2.getF()));
     }
 
     // Hàm getmo. ở đây lấy phần tử có số f nhỏ nhất
@@ -150,9 +156,14 @@ public class App {
 
     private void printNodes(String nodeName, List<Node> nodes) {
         System.out.println(nodeName + " : ");
+        if (nodes.isEmpty()) {
+            System.out.println("[]");
+            return;
+        }
+        System.out.println("[");
         for (Node node : nodes) {
             System.out.println("\t" + node.toString());
         }
-        System.out.println();
+        System.out.println("]");
     }
 }
