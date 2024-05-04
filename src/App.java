@@ -1,10 +1,11 @@
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class App {
-    private List<Node> MO = new LinkedList<>();
-    private List<Node> DONG = new LinkedList<>();
-    private List<Graph> GRAPH = new LinkedList<>();
-    private List<Node> NODE = new LinkedList<>();
+    private LinkedList<Node> MO = new LinkedList<>();
+    private LinkedList<Node> DONG = new LinkedList<>();
+    private LinkedList<Graph> GRAPH = new LinkedList<>();
+    private LinkedList<Node> NODE = new LinkedList<>();
 
     // Hàm logic chính
     private void find(Node root) {
@@ -27,7 +28,7 @@ public class App {
             // g(S)
             int disRootS = getDistance(root, s);
             System.out.println("Distance Root(" + root.name + ") -> S(" + s.name + ") : " + disRootS + "\n");
-
+            
             List<Node> children = getChild(s);
             if (!children.isEmpty()) {
                 for (Node child : children) {
@@ -38,14 +39,14 @@ public class App {
                     
                     // g(m) = g(root, S) + g(S, m)
                     int gChild = disRootS + disSChild;
-                    
+
                     if (!MO.contains(child) && !DONG.contains(child)) {
                         child.g = gChild;
                         System.out.println("Add new node to MO : " + child);
                         MO.add(child);
                     } else {
-                        for (int i = 0; i < MO.size(); i++) {
-                            Node node = MO.get(i); 
+                        for (int i = 0; i < NODE.size(); i++) {
+                            Node node = NODE.get(i); 
                             if (node.equals(child) && node.g > gChild) {
                                 System.out.println("Update g of node " + node + " new value : " + gChild);
                                 node.g = gChild;
@@ -53,19 +54,16 @@ public class App {
                         }
                     }
                     // f(m) = g(m) + h(m)
-                    System.out.println("f(" + child.name + ") = " + (child.g + child.h));
+                    System.out.println("f(" + child.name + ") = " + child.getF());
                     sortMo();
                     System.out.println();
                 }
             }
         }
+        System.out.println("Không thành công"); 
     }
 
     private void sortMo() {
-        if (MO.isEmpty()) {
-            System.out.println("MO trống");
-            return;
-        }
         MO.sort((n1, n2) -> n1.getF().compareTo(n2.getF()));
     }
 
@@ -85,10 +83,10 @@ public class App {
 
     // Hàm tính khoảng cách giữa 2 node bất kì
     private int getDistance(Node from, Node to) {
-        int g = 0;
         if (from.equals(to)) {
             return 0;
         }
+        // A -> C -> D -> E
         for (Graph graph : GRAPH) {
             if (from.equals(graph.node1)) {
                 if (to.equals(graph.node2)) {
@@ -100,12 +98,12 @@ public class App {
                 }
             }
         }
-        return g;
+        return to.g;
     }
 
     // Hàm tìm các con của node
-    private List<Node> getChild(Node node) {
-        List<Node> response = new LinkedList<>();
+    private LinkedList<Node> getChild(Node node) {
+        LinkedList<Node> response = new LinkedList<>();
         for (Graph distance : GRAPH) {
             if (distance.node1.equals(node)) {
                 response.add(distance.node2);
@@ -134,7 +132,7 @@ public class App {
         Node e = new Node("E", 5, false);
         Node f = new Node("F", 4, false);
         Node g = new Node("G", 4, false);
-        Node h = new Node("H", 0, true);
+        Node h = new Node("H", 0, false);
         NODE.addAll(List.of(a, b, c, d, e, f, g, h));
 
         GRAPH.add(new Graph(a, b, 5));
