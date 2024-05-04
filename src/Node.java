@@ -24,6 +24,6 @@ public class Node {
             " (h=" + h +
             ", f=" + f +
             ",isGoal=" + isGoal + "" +
-            ")\n";
+            ")";
     }
 }

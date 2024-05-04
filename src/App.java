@@ -11,40 +11,45 @@ public class App {
         int n = 0;
         MO.add(root);
         while (!MO.isEmpty()) {
-            System.out.println("Bước " + ++n); 
+            System.out.println("N = " + ++n); 
+            printNodes("MO", MO);
             Node s = getmo();
             DONG.add(s);
             System.out.println("S = " + s);
 
             if (s.isGoal) {
                 System.out.println("Tìm kiếm thành công : " + s);
-                System.out.println("MO = " + MO);
-                System.out.println("DONG = " + DONG);
+                printNodes("MO", MO);
+                printNodes("DONG", DONG);
                 return;
             }
 
             List<Node> children = getChild(s);
             if (!children.isEmpty()) {
                 for (Node child : children) {
-                    System.out.print("Child : " + child);
+                    System.out.println("Child of " + s.name + " : " + child);
                     int disChildS = getDistance(child, s);
-                    int disRootS = getDistance(root, s);
-                    int f = disChildS + child.h + disRootS;
+                    int disRootChild = getDistance(root, child);
+                    int f = disChildS + child.h + disRootChild;
                     child.f = f;
+                    System.out.println("Distance S(" + s.name + ") -> Child(" + child.name + ") : " + disChildS);
+                    System.out.println("Distance Root(" + root.name + ") -> Child(" + child.name + ") : " + disRootChild);
+                    System.out.println("f(" + child.name + ") = " + f);
                     if (!MO.contains(child) && !DONG.contains(child)) {
                         System.out.println("Add new node to MO : " + child);
                         MO.add(child);
-                    }
-                    for (Node node : MO) {
-                        if (node.equals(child) && node.f > child.f) {
-                            System.out.println("Update f of " + node);
-                            MO.remove(node);
-                            MO.add(child);
+                    } else {
+                        for (int i = 0; i < MO.size(); i++) {
+                            Node node = MO.get(i); 
+                            if (node.equals(child) && node.f > child.f) {
+                                System.out.println("Replace node of " + node + " by " + child);
+                                MO.remove(i);
+                                MO.add(i, child);
+                            }
                         }
                     }
-                    System.out.println("Distance S(" + s.name + ") -> Child(" + child.name + ") : " + disChildS);
-                    System.out.println("Distance Root(" + root.name + ") -> S(" + s.name + ") : " + disRootS);
-                    System.out.println("\tf = " + f + "\n");
+                    sortMo();
+                    System.out.println();
                 }
             }
         }
@@ -63,9 +68,9 @@ public class App {
         if (MO.isEmpty()) {
             return null;
         }
-        sortMo();
         int index = 0;
         Node result = MO.get(index);
+        MO.remove(index);
         while (DONG.contains(result)) {
             result = MO.get(index++);
         }
@@ -83,7 +88,6 @@ public class App {
                 if (to.equals(graph.node2)) {
                     return graph.distance;
                 }
-                return graph.distance + getDistance(graph.node2, to);
             } else if (from.equals(graph.node2)) {
                 if (to.equals(graph.node1)) {
                     return graph.distance;
@@ -111,7 +115,7 @@ public class App {
     public static void main(String[] args) {
         App app = new App();
         Node root = app.init();
-        // System.out.println(app.MO);
+        app.printNodes("MO", app.MO);
         app.find(root);
     }
 
@@ -142,5 +146,13 @@ public class App {
 
         // return root
         return a;
+    }
+
+    private void printNodes(String nodeName, List<Node> nodes) {
+        System.out.println(nodeName + " : ");
+        for (Node node : nodes) {
+            System.out.println("\t" + node.toString());
+        }
+        System.out.println();
     }
 }
