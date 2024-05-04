@@ -50,19 +50,26 @@ public class App {
         }
     }
 
+    private void sortMo() {
+        if (MO.isEmpty()) {
+            System.out.println("MO trống");
+            return;
+        }
+        MO.sort((n1, n2) -> n1.f.compareTo(n2.f));
+    }
+
     // Hàm getmo. ở đây lấy phần tử có số f nhỏ nhất
     private Node getmo() {
         if (MO.isEmpty()) {
             return null;
         }
-        Node res = MO.get(0);
-        for (Node node : MO) {
-            if (node.f < res.f && !DONG.contains(node)) {
-                res = node;
-            }
+        sortMo();
+        int index = 0;
+        Node result = MO.get(index);
+        while (DONG.contains(result)) {
+            result = MO.get(index++);
         }
-        MO.remove(res);
-        return res;
+        return result;
     }
 
     // Hàm tính khoảng cách giữa 2 node bất kì

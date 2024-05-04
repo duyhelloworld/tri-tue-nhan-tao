@@ -1,8 +1,8 @@
 public class Node {
     
     String name;
-    int f;
-    final int h;
+    Integer f;
+    final Integer h;
     boolean isGoal;
 
     public Node(String name, int h, boolean isGoal) {
