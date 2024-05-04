@@ -2,6 +2,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class App {
+    
     private LinkedList<Node> MO = new LinkedList<>();
     private LinkedList<Node> DONG = new LinkedList<>();
     private LinkedList<Graph> GRAPH = new LinkedList<>();
