@@ -1,26 +1,34 @@
 public class Node {
     
     String name;
-    int h, f;
+    Integer g;
+    final Integer h;
     boolean isGoal;
 
     public Node(String name, int h, boolean isGoal) {
         this.h = h;
-        this.f = 0;
+        this.g = 0;
         this.name = name;
         this.isGoal = isGoal;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return name.equals(((Node) obj).name);
+        Node node = (Node) obj;
+        return name.equals(node.name) && g == node.g;
+    }
+
+    public Integer getF() {
+        return g + h;
     }
 
     @Override
     public String toString() {
-        return "Node " + name +
+        return name +
             " (h=" + h +
-            ",isGoal=" + isGoal + "" +
-            ")\n";
+            ", g=" + g +
+            ", f=" + getF() +
+            ", isGoal=" + isGoal +
+            ")";
     }
 }
