@@ -1,7 +1,8 @@
 public class Node {
     
     String name;
-    int h, f;
+    int f;
+    final int h;
     boolean isGoal;
 
     public Node(String name, int h, boolean isGoal) {
@@ -13,13 +14,15 @@ public class Node {
 
     @Override
     public boolean equals(Object obj) {
-        return name.equals(((Node) obj).name);
+        Node node = (Node) obj;
+        return name.equals(node.name) && f == node.f;
     }
 
     @Override
     public String toString() {
-        return "Node " + name +
+        return name +
             " (h=" + h +
+            ", f=" + f +
             ",isGoal=" + isGoal + "" +
             ")\n";
     }
